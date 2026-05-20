@@ -1,0 +1,2 @@
+# .github
+Inimatic organization profile
