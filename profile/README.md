@@ -17,7 +17,7 @@ Inimatic builds **AdaOS**, an environment for personal digital assistants. AdaOS
 
 | Surface | Link |
 | --- | --- |
-| Web app | [inimatic.web.app](https://inimatic.web.app/) |
+| Web app | [inimatic.com](https://inimatic.com/) |
 | Documentation | [inimatic.github.io/adaos](https://inimatic.github.io/adaos/) |
 | Core repository | [github.com/inimatic/adaos](https://github.com/inimatic/adaos) |
 | API health | [api.inimatic.com/healthz](https://api.inimatic.com/healthz) |
