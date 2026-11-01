@@ -1,0 +1,21 @@
+name: Nightly regression gate
+description: Reuse a successful qualification of the same committed source; manual runs can force a new qualification.
+inputs:
+  force:
+    description: Run even when this source already passed.
+    default: 'false'
+outputs:
+  run:
+    description: Whether the regression must execute.
+    value: ${{ steps.gate.outputs.run }}
+runs:
+  using: composite
+  steps:
+    - id: gate
+      uses: actions/github-script@v7
+      env:
+        FORCE_REGRESSION: ${{ inputs.force }}
+        GATE_SOURCE: ${{ github.action_path }}/gate.cjs
+      with:
+        script: |
+          await require(process.env.GATE_SOURCE)({github, context, core, force: process.env.FORCE_REGRESSION === 'true'});

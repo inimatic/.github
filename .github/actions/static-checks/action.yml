@@ -1,0 +1,12 @@
+name: Static repository checks
+description: One bounded job for workflow syntax, Python, JavaScript and Go syntax, and manifests.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - shell: bash
+      run: python -m pip install --disable-pip-version-check --quiet PyYAML==6.0.3
+    - shell: bash
+      run: python "$GITHUB_ACTION_PATH/check.py"
