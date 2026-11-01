@@ -13,4 +13,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: node --test tests/nightly-gate.test.cjs
-      - run: python3 tests/root-delivery.test.py
+      - run: python3 -B tests/root-delivery.test.py
