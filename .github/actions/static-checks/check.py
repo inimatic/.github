@@ -33,7 +33,7 @@ def main():
             elif path.suffix in {'.mjs', '.cjs'}:
                 subprocess.run(['node', '--check', str(path)], check=True, capture_output=True)
             elif path.suffix == '.sh':
-                subprocess.run(['bash', '-n', str(path)], check=True, capture_output=True)
+                subprocess.run(['bash', '-n'], input=path.read_bytes().replace(b'\r\n', b'\n'), check=True, capture_output=True)
             elif path.suffix == '.go':
                 go_files.append(str(path))
                 continue
