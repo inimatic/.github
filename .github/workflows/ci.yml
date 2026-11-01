@@ -1,7 +1,7 @@
 name: Shared CI policy checks
 on:
   push:
-    branches: [main]
+    branches: [main, dev2027]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -13,3 +13,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: node --test tests/nightly-gate.test.cjs
+      - run: python3 tests/root-delivery.test.py
