@@ -1,11 +1,16 @@
 name: Shared CI policy checks
 on:
   push:
-    branches: [main, dev2027]
+    branches: [main]
+    paths: ['.github/actions/**', '.github/workflows/ci.yml', 'tests/**']
   pull_request:
+    paths: ['.github/actions/**', '.github/workflows/ci.yml', 'tests/**']
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: shared-policy-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   test:
     runs-on: ubuntu-24.04

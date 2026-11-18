@@ -13,8 +13,9 @@ module.exports = async function gate({github, context, core, force}) {
     status: 'success', per_page: 100,
   });
   const qualified = runs.find(run => run.id !== context.runId &&
+    run.workflow_id === current.workflow_id && run.conclusion === 'success' &&
     run.head_sha === context.sha && run.head_branch === current.head_branch &&
-    ['schedule', 'workflow_dispatch'].includes(run.event));
+    ['push', 'schedule', 'workflow_dispatch'].includes(run.event));
   core.setOutput('run', qualified ? 'false' : 'true');
   if (qualified) {
     core.info(`Source ${context.sha} already qualified by ${qualified.html_url}; retaining that result.`);
