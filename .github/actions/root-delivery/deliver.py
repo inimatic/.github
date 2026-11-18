@@ -31,6 +31,7 @@ def main():
     if not re.fullmatch('[0-9a-f]{40}', revision):
         raise ValueError('full source revision is required')
     request = {'schema': 'inimatic.root_ci_request.v1', 'kind': os.environ['DELIVERY_KIND'],
+               'source_branch': os.environ.get('DELIVERY_SOURCE_BRANCH', 'main'),
                'revision': revision, 'run_id': int(os.environ['DELIVERY_RUN_ID']),
                'run_attempt': int(os.environ['DELIVERY_RUN_ATTEMPT']),
                'token': os.environ['DELIVERY_TOKEN'], 'dry_run': os.environ['DELIVERY_DRY_RUN'] == 'true'}
@@ -46,7 +47,7 @@ def main():
                        '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=4',
                        '-o', 'UserKnownHostsFile=' + str(Path(__file__).with_name('known_hosts')),
                        'inimatic-ci@' + target['host'], 'deliver']
-            result = subprocess.run(command, input=json.dumps(request).encode(), capture_output=True, timeout=2400)
+            result = subprocess.run(command, input=json.dumps(request).encode(), capture_output=True, timeout=900)
             if result.returncode:
                 # Child diagnostics and credentials never enter Actions logs.
                 reason = ''
@@ -61,6 +62,11 @@ def main():
             if receipt.get('ok') is not True:
                 raise RuntimeError('Root did not accept the release for ' + target['zone'])
             print(json.dumps({'zone': target['zone'], **receipt}), flush=True)
+            if os.environ.get('GITHUB_STEP_SUMMARY'):
+                with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as summary:
+                    summary.write(f"Root {target['zone']}: {receipt.get('delivery_state', 'published')}; "
+                                  f"operation `{receipt.get('operation', revision)}`. "
+                                  "Backend delivery completion is reported by Root delivery Checks.\n")
 
 
 if __name__ == '__main__':
