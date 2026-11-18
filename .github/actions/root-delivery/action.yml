@@ -1,4 +1,4 @@
-name: Deliver qualified main to Root
+name: Submit qualified source to Root
 description: Submit a bounded release to each Root's forced-command SSH admission.
 inputs:
   kind:
@@ -7,6 +7,9 @@ inputs:
   revision:
     description: Exact qualified source SHA
     required: true
+  source-branch:
+    description: Qualified delivery source list (main or dev2027 for Core)
+    default: main
   run-id:
     description: Successful Core run or qualified infrastructure image run
     required: true
@@ -32,6 +35,7 @@ runs:
       env:
         DELIVERY_KIND: ${{ inputs.kind }}
         DELIVERY_REVISION: ${{ inputs.revision }}
+        DELIVERY_SOURCE_BRANCH: ${{ inputs.source-branch }}
         DELIVERY_RUN_ID: ${{ inputs.run-id }}
         DELIVERY_RUN_ATTEMPT: ${{ inputs.run-attempt }}
         DELIVERY_IMAGE: ${{ inputs.image }}

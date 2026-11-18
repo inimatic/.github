@@ -4,6 +4,12 @@ inputs:
   force:
     description: Run even when this source already passed.
     default: 'false'
+  environment:
+    description: Explicit qualification runtime and dependency profile; binds reuse to runner image
+    default: ''
+  mode:
+    description: check before tests, record only after the complete plan succeeds
+    default: check
 outputs:
   run:
     description: Whether the regression must execute.
@@ -16,6 +22,15 @@ runs:
       env:
         FORCE_REGRESSION: ${{ inputs.force }}
         GATE_SOURCE: ${{ github.action_path }}/gate.cjs
+        QUALIFICATION_ENVIRONMENT: ${{ inputs.environment }}
+        QUALIFICATION_MODE: ${{ inputs.mode }}
       with:
         script: |
-          await require(process.env.GATE_SOURCE)({github, context, core, force: process.env.FORCE_REGRESSION === 'true'});
+          await require(process.env.GATE_SOURCE)({github, context, core, force: process.env.FORCE_REGRESSION === 'true', environment: process.env.QUALIFICATION_ENVIRONMENT, mode: process.env.QUALIFICATION_MODE});
+    - uses: actions/upload-artifact@v4
+      if: inputs.mode == 'record' && steps.gate.outputs.receipt != ''
+      continue-on-error: true
+      with:
+        name: ${{ steps.gate.outputs.receipt }}
+        path: ${{ runner.temp }}/adaos-qualification-receipt.json
+        retention-days: 7
