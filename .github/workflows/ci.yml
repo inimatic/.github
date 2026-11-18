@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths: ['.github/actions/**', '.github/workflows/ci.yml', 'tests/**']
   pull_request:
-    paths: ['.github/actions/**', '.github/workflows/ci.yml', 'tests/**']
+    # Required status: keep documentation PRs mergeable.
   workflow_dispatch:
 permissions:
   contents: read
